@@ -35,31 +35,41 @@
                         <div class="input-group">
                             <input type="text" name="q" class="form-control" placeholder="Search..."/>
                             <span class="input-group-btn">
-                                <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+                                <button type='submit' name='search' id='search-btn' class="btn btn-flat">
+                                    <i class="fa fa-search"></i>
+                                </button>
                             </span>
                         </div>
                     </form> -->
                     <!-- /.search form -->
                     <!-- sidebar menu: : style can be found in sidebar.less -->
                     <ul class="sidebar-menu">
-                        <?php foreach ($databases as $db) {?>
-                        <li class="treeview">
+                        <?php
+                        foreach ($databases as $db) :
+                        ?>
+                        <li class="treeview" class="<?php echo $db['name'] === $dbName ? 'active' : '';?>">
                             <a href="#">
                                 <i class="fa fa-bar-chart-o"></i>
                                 <span><?php echo $db['name'];?></span>
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
-                            <ul class="treeview-menu">
-                                <?php foreach ($db['collections'] as $collection) {?>
+                            <ul class="treeview-menu" style="<?php echo $db['name'] === $dbName ? 'display:block' : '';?>">
+                                <?php
+                                foreach ($db['collections'] as $collection) :
+                                ?>
                                 <li>
                                     <a href="<?php echo 'index.php?action=collection&db=' . $db['name'] . '&collection=' . $collection?>">
                                         <i class="fa fa-angle-double-right"></i><?php echo $collection;?>
                                     </a>
                                 </li>
-                                <?php }?>
+                                <?php
+                                endforeach;
+                                ?>
                             </ul>
                         </li>
-                        <?php }?>
+                        <?php
+                        endforeach;
+                        ?>
                     </ul>
                 </section>
                 <!-- /.sidebar -->
@@ -71,12 +81,18 @@
                 <section class="content-header">
                     <h1>
                         <?php echo $dbName;?>
-                        <small><?php echo $collectionName;?></small>
-                        <?php if (!empty($collectionName)):?>
+                        <small><?php echo $collectionName;?> </small>
+                        <?php
+                        if (!empty($collectionName)) :
+                        ?>
                         <a class="add-btn btn btn-primary pull-right" data-toggle="modal" data-target="#editModal">Add New Document</a>
-                        <?php else:?>
+                        <?php
+                        else :
+                        ?>
                         Total Size: <?php echo $totalSize/1024.0/1024.0;?>MB
-                        <?php endif;?>
+                        <?php
+                        endif;
+                        ?>
                     </h1>
                 </section>
 
@@ -85,39 +101,53 @@
 
                     <!-- Small boxes (Stat box) -->
                     <div>
-                        <?php if (!empty($collectionName)) {?>
+                        <?php
+                        if (!empty($collectionName)) :
+                        ?>
                         <div id="show" class="box-body">
                             <table class="table table-bordered">
                                 <tbody>
                                 <tr>
-                                    <?php foreach ($keys as $key) {?>
+                                    <?php
+                                    foreach ($keys as $key) :
+                                    ?>
                                     <th><?php echo $key;?></th>
-                                    <?php }?>
+                                    <?php
+                                    endforeach;
+                                    ?>
                                     <th><div>Options</div></th>
                                 </tr>
-                                <?php foreach ($documents as $document) {?>
+                                <?php
+                                foreach ($documents as $document) :
+                                ?>
                                 <tr>
-                                    <?php foreach ($keys as $key) {?>
+                                    <?php
+                                    foreach ($keys as $key) :
+                                    ?>
                                     <td>
                                     <?php
-                                        if (isset($document[$key])) {
-                                            if (is_bool($document[$key])) {
-                                                echo $document[$key] ? 'true' : 'false';
-                                            } else if ($document[$key] instanceof MongoDate) {
-                                                echo date('Y-m-d H:i:s', $document[$key]->sec);
-                                            } else {
-                                                echo $document[$key];
-                                            }
+                                    if (isset($document[$key])) {
+                                        if (is_bool($document[$key])) {
+                                            echo $document[$key] ? 'true' : 'false';
+                                        } elseif ($document[$key] instanceof MongoDate) {
+                                            echo date('Y-m-d H:i:s', $document[$key]->sec);
+                                        } else {
+                                            echo $document[$key];
                                         }
+                                    }
                                     ?>
                                     </td>
-                                    <?php }?>
+                                    <?php
+                                    endforeach;
+                                    ?>
                                     <td>
                                         <a class="edit-btn btn btn-primary" data-id="<?php echo $document['_id'];?>" data-toggle="modal" data-target="#editModal">Edit</a>
                                         <a class="btn btn-danger" href="<?php echo 'index.php?action=delete&db=' . $dbName . '&collection=' . $collectionName . '&id=' . $document['_id'];?>">Delete</a>
                                     </td>
                                 </tr>
-                                <?php }?>
+                                <?php
+                                endforeach;
+                                ?>
                             </tbody></table>
                         </div><!-- /.box-body -->
                         <!-- <div class="box-footer clearfix">
@@ -129,7 +159,9 @@
                                 <li><a href="#">»</a></li>
                             </ul>
                         </div> -->
-                        <?php } else { ?>
+                        <?php
+                        else :
+                        ?>
                         <div class="box-body">
                             <table class="table table-bordered">
                                 <tbody>
@@ -139,7 +171,9 @@
                                     <th>Empty</th>
                                     <th><div>Options</div></th>
                                 </tr>
-                                <?php foreach ($databases as $db) {?>
+                                <?php
+                                foreach ($databases as $db) :
+                                ?>
                                 <tr>
                                     <td><?php echo $db['name'];?></td>
                                     <td><?php echo $db['sizeOnDisk']/1024.0/1024.0;?></td>
@@ -148,10 +182,14 @@
                                         <a class="btn btn-danger" href="<?php echo 'index.php?action=dropDb&db=' . $db['name'];?>">Delete</a>
                                     </td>
                                 </tr>
-                                <?php }?>
+                                <?php
+                                endforeach;
+                                ?>
                             </tbody></table>
                         </div>
-                        <?php }?>
+                        <?php
+                        endif;
+                        ?>
                     </div><!-- /.row (main row) -->
 
                 </section><!-- /.content -->

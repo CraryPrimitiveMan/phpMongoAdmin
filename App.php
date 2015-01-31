@@ -1,4 +1,5 @@
 <?php
+use controllers\MongoController;
 /**
  * The project base path
  */
@@ -19,15 +20,6 @@ Class App
      * @var array
      */
     public static $config;
-
-    /**
-     * Define the class map
-     * @var array
-     */
-    public static $classMap = array(
-        'MongoAdmin' => '/mongo/MongoAdmin.php',
-        'MongoController' => '/controllers/MongoController.php'
-    );
 
     /**
      * Get the app. It's a singleton.

@@ -49,17 +49,15 @@
                         ?>
                         <li class="treeview" class="<?php echo $db['name'] === $dbName ? 'active' : '';?>">
                             <a href="#">
-                                <i class="fa fa-bar-chart-o"></i>
                                 <span><?php echo $db['name'];?></span>
-                                <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu" style="<?php echo $db['name'] === $dbName ? 'display:block' : '';?>">
                                 <?php
                                 foreach ($db['collections'] as $collection) :
                                 ?>
-                                <li>
+                                <li class="<?php echo $collection === $collectionName ? 'active': ''; ?>">
                                     <a href="<?php echo 'index.php?action=collection&db=' . $db['name'] . '&collection=' . $collection?>">
-                                        <i class="fa fa-angle-double-right"></i><?php echo $collection;?>
+                                        <?php echo $collection;?>
                                     </a>
                                 </li>
                                 <?php
@@ -78,7 +76,7 @@
             <!-- Right side column. Contains the navbar and content of the page -->
             <aside class="right-side">
                 <!-- Content Header (Page header) -->
-                <section class="content-header">
+                <section class="content-header clearfix">
                     <h1>
                         <?php echo $dbName;?>
                         <small><?php echo $collectionName;?> </small>
@@ -89,7 +87,7 @@
                         <?php
                         else :
                         ?>
-                        Total Size: <?php echo $totalSize/1024.0/1024.0;?>MB
+                        All Databases
                         <?php
                         endif;
                         ?>
@@ -166,9 +164,7 @@
                             <table class="table table-bordered">
                                 <tbody>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Size On Disk(MB)</th>
-                                    <th>Empty</th>
+                                    <th>Database Name</th>
                                     <th><div>Options</div></th>
                                 </tr>
                                 <?php
@@ -176,8 +172,6 @@
                                 ?>
                                 <tr>
                                     <td><?php echo $db['name'];?></td>
-                                    <td><?php echo $db['sizeOnDisk']/1024.0/1024.0;?></td>
-                                    <td><?php echo $db['empty'] ? 'true' : 'false';?></td>
                                     <td>
                                         <a class="btn btn-danger" href="<?php echo 'index.php?action=dropDb&db=' . $db['name'];?>">Delete</a>
                                     </td>

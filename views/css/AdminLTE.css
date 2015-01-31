@@ -3550,3 +3550,7 @@ fieldset[disabled] .btn-vk.active {
 #show.box-body th>div {
   width: 125px;
 }
+.sidebar .sidebar-menu .treeview-menu > li {
+  border-top: 1px solid #eee;
+  padding: 3px 0;
+}

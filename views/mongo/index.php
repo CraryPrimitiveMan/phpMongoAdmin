@@ -30,6 +30,23 @@
             <aside class="left-side sidebar-offcanvas">
                 <!-- sidebar: style can be found in sidebar.less -->
                 <section class="sidebar">
+                    <div class="dropdown">
+                        <button class="btn btn-defalut dropdown-toggle" type="button" id="serverSelected" data-toggle="dropdown" aria-expanded="true">
+                            <?php echo $serverName;?>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="serverSelected">
+                            <?php
+                            foreach ($servers as $server) :
+                            ?>
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" href="<?php echo 'index.php?server=' . $server['name'];?>"><?php echo $server['name'];?></a>
+                            </li>
+                            <?php
+                            endforeach;
+                            ?>
+                        </ul>
+                    </div>
                     <!-- search form -->
                     <!-- <form action="#" method="get" class="sidebar-form">
                         <div class="input-group">
@@ -56,7 +73,7 @@
                                 foreach ($db['collections'] as $collection) :
                                 ?>
                                 <li class="<?php echo $collection === $collectionName ? 'active': ''; ?>">
-                                    <a href="<?php echo 'index.php?action=collection&db=' . $db['name'] . '&collection=' . $collection?>">
+                                    <a href="<?php echo 'index.php?action=collection&db=' . $db['name'] . '&collection=' . $collection . '&server=' . $serverName;?>">
                                         <?php echo $collection;?>
                                     </a>
                                 </li>
@@ -83,7 +100,7 @@
                         <?php
                         if (!empty($collectionName)) :
                         ?>
-                        <a class="add-btn btn btn-primary pull-right" data-toggle="modal" data-target="#editModal">Add New Document</a>
+                        <a class="add-btn btn btn-primary pull-right">Add New Document</a>
                         <?php
                         else :
                         ?>
@@ -99,54 +116,33 @@
 
                     <!-- Small boxes (Stat box) -->
                     <div>
+                        <div>
+                            <div class="document" style="display:none;">
+                                <div class="btns">
+                                    <a class="insert-btn btn btn-success">Save</a>
+                                    <a class="cancel-btn btn btn-info">Cancel</a>
+                                </div>
+                                <textarea id="content" class="show" name="content"></textarea>
+                            </div>
+                        </div>
                         <?php
                         if (!empty($collectionName)) :
                         ?>
                         <div id="show" class="box-body">
-                            <table class="table table-bordered">
-                                <tbody>
-                                <tr>
-                                    <?php
-                                    foreach ($keys as $key) :
-                                    ?>
-                                    <th><?php echo $key;?></th>
-                                    <?php
-                                    endforeach;
-                                    ?>
-                                    <th><div>Options</div></th>
-                                </tr>
-                                <?php
-                                foreach ($documents as $document) :
-                                ?>
-                                <tr>
-                                    <?php
-                                    foreach ($keys as $key) :
-                                    ?>
-                                    <td>
-                                    <?php
-                                    if (isset($document[$key])) {
-                                        if (is_bool($document[$key])) {
-                                            echo $document[$key] ? 'true' : 'false';
-                                        } elseif ($document[$key] instanceof MongoDate) {
-                                            echo date('Y-m-d H:i:s', $document[$key]->sec);
-                                        } else {
-                                            echo $document[$key];
-                                        }
-                                    }
-                                    ?>
-                                    </td>
-                                    <?php
-                                    endforeach;
-                                    ?>
-                                    <td>
-                                        <a class="edit-btn btn btn-primary" data-id="<?php echo $document['_id'];?>" data-toggle="modal" data-target="#editModal">Edit</a>
-                                        <a class="btn btn-danger" href="<?php echo 'index.php?action=delete&db=' . $dbName . '&collection=' . $collectionName . '&id=' . $document['_id'];?>">Delete</a>
-                                    </td>
-                                </tr>
-                                <?php
-                                endforeach;
-                                ?>
-                            </tbody></table>
+                            <?php
+                             foreach ($documents as $document) :
+                            ?>
+                            <div class="document">
+                                <div class="btns">
+                                    <a class="edit-btn btn btn-primary" data-id="<?php echo $document['id'];?>">Edit</a>
+                                    <a class="save-btn btn btn-success" data-id="<?php echo $document['id'];?>" style="display: none;">Save</a>
+                                    <a class="delete-btn btn btn-danger" href="<?php echo 'index.php?action=delete&db=' . $dbName . '&collection=' . $collectionName . '&id=' . $document['id'] . '&server=' . $serverName;?>">Delete</a>
+                                </div>
+                                <textarea id="<?php echo $document['id'];?>" class="show" name="content" content='<?php echo $document['content'];?>' readonly="readonly" onpropertychange="this.style.posHeight=this.scrollHeight"></textarea>
+                            </div>
+                            <?php
+                            endforeach;
+                            ?>
                         </div><!-- /.box-body -->
                         <!-- <div class="box-footer clearfix">
                             <ul class="pagination pagination-sm no-margin pull-right">
@@ -173,7 +169,7 @@
                                 <tr>
                                     <td><?php echo $db['name'];?></td>
                                     <td>
-                                        <a class="btn btn-danger" href="<?php echo 'index.php?action=dropDb&db=' . $db['name'];?>">Delete</a>
+                                        <a class="btn btn-danger" href="<?php echo 'index.php?action=dropDb&db=' . $db['name'] . '&server=' . $serverName;?>">Delete</a>
                                     </td>
                                 </tr>
                                 <?php
@@ -190,23 +186,6 @@
 
             </aside><!-- /.right-side -->
         </div><!-- ./wrapper -->
-        <!-- Modal -->
-        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <form class="modal-content" method='post' action='<?php echo 'index.php?action=update&db=' . $dbName . '&collection=' . $collectionName;?>'>
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="editModalLabel">Content</h4>
-              </div>
-              <div class="modal-body">
-                <textarea id="content" name="content"></textarea>
-              </div>
-              <div class="modal-footer">
-                <button id="save" type="submit" class="btn btn-primary">Save</button>
-              </div>
-            </form>
-          </div>
-        </div>
         <!-- add new calendar event modal -->
         <script src="views/js/plugins/jquery/jquery.min.js"></script>
         <script src="views/js/plugins/bootstrap/bootstrap.min.js" type="text/javascript"></script>

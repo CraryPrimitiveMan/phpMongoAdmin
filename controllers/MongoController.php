@@ -13,29 +13,36 @@ Class MongoController extends Controller
 {
     public $mongo;
 
+    public $servers;
+
     public function __construct() {
         $mongoConfigs = App::$config['mongo'];
         $server = $_GET['server'];
 
         foreach ($mongoConfigs as $mongoConfig) {
-            if ($server === $mongoConfig['server']) {
-                $dsn = $mongoConfig['dsn'];
+            if ($server === $mongoConfig['name']) {
+                $config = $mongoConfig;
                 break;
             }
         }
-
-        if (empty($dsn)) {
-            $dsn = $mongoConfigs[0]['dsn'];
+        if (empty($config)) {
+            $config = $mongoConfigs[0];
         }
 
-        $this->mongo = new Connection($dsn);
+        $this->mongo = new Connection($config['dsn'], $config['name']);
+        $this->servers = $mongoConfigs;
     }
 
     /**
      * The databases page
      */
     public function actionIndex() {
-        $this->render('/index', array('databases' => $this->mongo->getDatabases()));
+        $data = array(
+            'databases'     => $this->mongo->getDatabases(),
+            'serverName'    => $this->mongo->serverName,
+            'servers'       => $this->servers
+        );
+        $this->render('/index', $data);
     }
 
     /**
@@ -44,9 +51,14 @@ Class MongoController extends Controller
     public function actionDropDb() {
         $dbName = $_GET['db'];
         if(!empty($dbName)) {
-            $this->mongo->selectDatabase($dbName)->drop();
+            $result = $this->mongo->selectDatabase($dbName)->drop();
             $dbs = $this->mongo->getDatabases();
-            $this->render('/index', array('databases' => $dbs));
+            $data = array(
+                'databases'     => $dbs,
+                'serverName'    => $this->mongo->serverName,
+                'servers'       => $this->servers
+            );
+            $this->render('/index', $data);
         }
     }
 
@@ -60,6 +72,7 @@ Class MongoController extends Controller
             $dbs = $this->mongo->getDatabases();
             $data = $this->mongo->findAll($dbName, $collectionName);
             $data['databases'] = $dbs;
+            $data['servers'] = $this->servers;
             $this->render('/index', $data);
         }
     }
@@ -77,6 +90,7 @@ Class MongoController extends Controller
             $collection->remove(array('_id' => new MongoId($id)));
             $data = $this->mongo->findAll($dbName, $collectionName);
             $data['databases'] = $dbs;
+            $data['servers'] = $this->servers;
             $this->render('/index', $data);
         }
     }
@@ -105,38 +119,9 @@ Class MongoController extends Controller
         $content = $_POST['content'];
         if(!empty($dbName) && !empty($collectionName)) {
             $collection = $this->mongo->selectCollection($dbName, $collectionName);
-            $content = json_decode($content, true);
-            $content = $this->_formateData($content);
-
+            $content = $this->mongo->convert2Document($content);
             $result = $collection->save($content);
-            $dbs = $this->mongo->getDatabases();
-            $data = $this->mongo->findAll($dbName, $collectionName);
-            $data['databases'] = $dbs;
-            $this->render('/index', $data);
+            $this->sendResponse($result);
         }
-    }
-
-
-    /**
-     * Formate the json data to mongo data
-     * @param  array $content  the json data
-     * @return array           the mongo data
-     */
-    private function _formateData($content) {
-        foreach ($content as &$value) {
-            if (is_array($value)) {
-                if(isset($value['$id'])) {
-                    // A MongoId
-                    $value = new MongoId($value['$id']);
-                } else if (isset($value['sec']) && isset($value['usec'])) {
-                    // A MongoDate
-                    $value = new MongoDate($value['sec'], $value['usec']);
-                } else {
-                    // Normal array
-                    $value = $this->_formateData($value);
-                }
-            }
-        }
-        return $content;
     }
 }

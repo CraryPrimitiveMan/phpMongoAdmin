@@ -3540,6 +3540,10 @@ fieldset[disabled] .btn-vk.active {
   width: 100%;
   height: 400px;
   letter-spacing: 1.2px;
+  background: rgba(60, 141, 188, 0.3);
+  resize: none;
+  border: 0;
+  padding: 10px;
 }
 #show.box-body {
   overflow: auto;
@@ -3553,4 +3557,47 @@ fieldset[disabled] .btn-vk.active {
 .sidebar .sidebar-menu .treeview-menu > li {
   border-top: 1px solid #eee;
   padding: 3px 0;
+}
+textarea.show {
+  background:rgba(60, 141, 188, 0.3);
+  resize: none;
+  outline: none;
+  border: 0;
+  padding: 10px;
+  width: 100%;
+  height: 150px;
+  margin-bottom: 20px;
+  letter-spacing: 1.2px;
+}
+.btns {
+  margin-bottom: 10px;
+  text-align: right;
+}
+.btn {
+  margin-left: 10px;
+}
+.btn.dropdown-toggle {
+  border-bottom: 0;
+  width: 100%;
+  margin: 0;
+  border-radius: 0;
+}
+.dropdown-menu {
+  width: 100%;
+  border-radius: 0;
+  margin-top: 0;
+}
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(60, 141, 188, 0.8);
+}
+::-webkit-scrollbar-thumb:window-inactive {
+  background: #3c8dbc;
 }

@@ -2,6 +2,7 @@
 namespace base\mongo;
 
 use Exception;
+use base\mongo\Convert;
 /**
  * Connection represents a connection to a MongoDb server.
  **/
@@ -20,6 +21,11 @@ class Connection
     public $dsn;
 
     /**
+     * @var string name of a server
+     */
+    public $serverName;
+
+    /**
      * @var string name of the Mongo database to use by default.
      * If this field left blank, connection instance will attempt to determine it from
      * [[options]] and [[dsn]] automatically, if needed.
@@ -36,8 +42,9 @@ class Connection
      */
     private $_databases = array();
 
-    public function __construct($dsn) {
+    public function __construct($dsn, $server) {
         $this->dsn = $dsn;
+        $this->serverName = $server;
         $this->open();
     }
 
@@ -102,16 +109,24 @@ class Connection
         $collection = $this->selectCollection($dbName, $collectionName);
         $cursor = $collection->find();
         $data['documents'] = array();
-        $data['keys'] = array();
         foreach ($cursor as $document) {
-            $data['documents'][] = $document;
-            $data['keys'] = array_unique(array_merge($data['keys'], array_keys($document)));
+            $data['documents'][] = array('content' => $this->convert2Str($document), 'id' => $document['_id'] . '');
         }
         $data['dbName'] = $dbName;
         $data['collectionName'] = $collectionName;
+        $data['serverName'] = $this->serverName;
         return $data;
     }
 
+    public function convert2Str($document) {
+        $jsonData = Convert::document2Json($document);
+        return Convert::Json2Str($jsonData);
+    }
+
+    public function convert2Document($str) {
+        $jsonData = Convert::str2Json($str);
+        return Convert::Json2Document($jsonData);
+    }
     /**
      * Establishes a Mongo connection.
      * It does nothing if a Mongo connection has already been established.

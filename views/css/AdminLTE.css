@@ -3558,7 +3558,7 @@ fieldset[disabled] .btn-vk.active {
   border-top: 1px solid #eee;
   padding: 3px 0;
 }
-textarea.show {
+textarea.show, #shell {
   background:rgba(60, 141, 188, 0.3);
   resize: none;
   outline: none;
@@ -3568,6 +3568,16 @@ textarea.show {
   height: 150px;
   margin-bottom: 20px;
   letter-spacing: 1.2px;
+}
+.add-document textarea.show{
+  height: 300px;
+}
+.shell {
+  margin-bottom: 25px;
+}
+#shell {
+  height: 90px;
+  margin-bottom: 10px;
 }
 .btns {
   margin-bottom: 10px;

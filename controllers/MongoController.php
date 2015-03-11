@@ -5,7 +5,7 @@ use base\core\Controller;
 use base\mongo\Connection;
 use App;
 use MongoId;
-use MongoDate;
+use base\mongo\Shell;
 /**
  * Controller for mongo options
  */
@@ -40,7 +40,8 @@ Class MongoController extends Controller
         $data = array(
             'databases'     => $this->mongo->getDatabases(),
             'serverName'    => $this->mongo->serverName,
-            'servers'       => $this->servers
+            'servers'       => $this->servers,
+            'shell'         => Shell::queryDb()
         );
         $this->render('/index', $data);
     }
@@ -50,13 +51,14 @@ Class MongoController extends Controller
      */
     public function actionDropDb() {
         $dbName = $_GET['db'];
-        if(!empty($dbName)) {
+        if (!empty($dbName)) {
             $result = $this->mongo->selectDatabase($dbName)->drop();
             $dbs = $this->mongo->getDatabases();
             $data = array(
                 'databases'     => $dbs,
                 'serverName'    => $this->mongo->serverName,
-                'servers'       => $this->servers
+                'servers'       => $this->servers,
+                'shell'         => Shell::dropDb($dbName)
             );
             $this->render('/index', $data);
         }
@@ -68,11 +70,12 @@ Class MongoController extends Controller
     public function actionCollection() {
         $dbName = $_GET['db'];
         $collectionName = $_GET['collection'];
-        if(!empty($dbName) && !empty($collectionName)) {
+        if (!empty($dbName) && !empty($collectionName)) {
             $dbs = $this->mongo->getDatabases();
             $data = $this->mongo->findAll($dbName, $collectionName);
             $data['databases'] = $dbs;
             $data['servers'] = $this->servers;
+            $data['shell'] = Shell::query($collectionName);
             $this->render('/index', $data);
         }
     }
@@ -84,13 +87,14 @@ Class MongoController extends Controller
         $dbName = $_GET['db'];
         $collectionName = $_GET['collection'];
         $id = $_GET['id'];
-        if(!empty($dbName) && !empty($collectionName) && !empty($id)) {
+        if (!empty($dbName) && !empty($collectionName) && !empty($id)) {
             $dbs = $this->mongo->getDatabases();
             $collection = $this->mongo->selectCollection($dbName, $collectionName);
             $collection->remove(array('_id' => new MongoId($id)));
             $data = $this->mongo->findAll($dbName, $collectionName);
             $data['databases'] = $dbs;
             $data['servers'] = $this->servers;
+            $data['shell'] = Shell::delete($collectionName, $id);
             $this->render('/index', $data);
         }
     }
@@ -102,7 +106,7 @@ Class MongoController extends Controller
         $dbName = $_GET['db'];
         $collectionName = $_GET['collection'];
         $id = $_GET['id'];
-        if(!empty($dbName) && !empty($collectionName) && !empty($id)) {
+        if (!empty($dbName) && !empty($collectionName) && !empty($id)) {
             $collection = $this->mongo->selectCollection($dbName, $collectionName);
             $row = $collection->findOne(array('_id' => new MongoId($id)));
             $this->sendResponse($row);
@@ -117,10 +121,18 @@ Class MongoController extends Controller
         $dbName = $_GET['db'];
         $collectionName = $_GET['collection'];
         $content = $_POST['content'];
-        if(!empty($dbName) && !empty($collectionName)) {
+        if (!empty($dbName) && !empty($collectionName)) {
             $collection = $this->mongo->selectCollection($dbName, $collectionName);
             $content = $this->mongo->convert2Document($content);
+            $oldData = array();
+            if (isset($content['_id']) && $content['_id'] instanceof \MongoId) {
+                $oldData = $collection->findOne(array('_id' => $content['_id']));
+            } else {
+                $content['_id'] = new \MongoId();
+            }
             $result = $collection->save($content);
+            $newData = $collection->findOne(array('_id' => $content['_id']));
+            $result['shell'] = Shell::update($collectionName, $newData, $oldData);
             $this->sendResponse($result);
         }
     }

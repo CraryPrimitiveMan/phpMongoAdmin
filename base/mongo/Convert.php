@@ -32,7 +32,7 @@ class Convert
         $stringContent = preg_replace($objectIdRegular, $objectIdReplace, $stringContent);
         // Convert ISODate("2015-01-29T08:53:07.450Z") to "ISODate('2015-01-29T08:53:07.450Z')"
         $stringContent = preg_replace($dateReuglar, $dateReplace, $stringContent);
-        return json_decode($stringContent);
+        return json_decode($stringContent, true);
     }
 
     public static function document2Json($document) {
@@ -56,12 +56,17 @@ class Convert
             if (preg_match_all($objectIdRegular, $value, $matches)) {
                 $value = new \MongoId($matches[1][0]);
             } else if (preg_match_all($dateReuglar, $value, $matches)) {
-                $value = new \MongoDate($matches[1][0]);
+                $value = new \MongoDate(strtotime($matches[1][0]));
             } else if (is_array($value)) {
                 $value = self::Json2Document($value);
             }
         }
 
         return $jsonData;
+    }
+
+    public static function Document2Str($document) {
+        $json = self::document2Json($document);
+        return self::Json2Str($json);
     }
 }

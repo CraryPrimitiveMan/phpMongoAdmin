@@ -117,7 +117,15 @@
                     <!-- Small boxes (Stat box) -->
                     <div>
                         <div>
-                            <div class="document" style="display:none;">
+                            <div class="shell">
+                                <textarea id="shell" name="shell" content="<?php echo $shell; ?>"></textarea>
+<!--                                <div class="btns">-->
+<!--                                    <a class="execute-btn btn btn-success">Execute</a>-->
+<!--                                </div>-->
+                            </div>
+                        </div>
+                        <div>
+                            <div class="add-document document" style="display:none;">
                                 <div class="btns">
                                     <a class="insert-btn btn btn-success">Save</a>
                                     <a class="cancel-btn btn btn-info">Cancel</a>

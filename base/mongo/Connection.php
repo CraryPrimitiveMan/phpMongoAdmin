@@ -110,7 +110,8 @@ class Connection
         $cursor = $collection->find();
         $data['documents'] = array();
         foreach ($cursor as $document) {
-            $data['documents'][] = array('content' => $this->convert2Str($document), 'id' => $document['_id'] . '');
+            $content = array('content' => $this->convert2Str($document), 'id' => $document['_id'] . '');
+            array_unshift($data['documents'], $content);
         }
         $data['dbName'] = $dbName;
         $data['collectionName'] = $collectionName;

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>PHP Mongo Admin</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
+    <link rel="stylesheet" href="./vendor/bower/angular-material/angular-material.css" />
+    <link rel="stylesheet" href="app/assets/app.css" />
+</head>
+
+<body ng-app="starterApp" layout="column" ng-controller="MainCtrl as main">
+    <div flex layout="row">
+        <md-sidenav md-is-locked-open="$mdMedia('gt-sm')" class="md-whiteframe-z2" md-component-id="left">
+            <md-toolbar layout="row">
+                <h1>
+                    <a class="title" ng-href="./index.html" flex="">PHP Mongo Admin</a>
+                </h1>
+            </md-toolbar>
+            <md-content flex>
+                <md-list>
+                    <md-item ng-repeat="database in main.databases">
+                        <md-button class="md-button-toggle" ng-click="main.selectDB(database)">
+                          <div flex layout="row">
+                            {{database}}
+                            <span aria-hidden="true" class="md-toggle-icon" ng-class="{'toggled' : main.isOpen(database)}">
+                              <md-icon md-svg-src="md-toggle-arrow"></md-icon>
+                            </span>
+                          </div>
+                        </md-button>
+
+                        <ul ng-show="main.isOpen(database)" id="docs-menu-{{database}}" class="menu-toggle-list">
+                          <li ng-repeat="collection in main.collections">
+                            <menu-link section="collection" ng-click="main.selectCollection(collection)">{{collection}}</menu-link>
+                          </li>
+                        </ul>
+                    </md-item>
+                </md-list>
+            </md-content>
+        </md-sidenav>
+        <div style="width:100%;">
+            <md-toolbar layout="row">
+                <md-button class="menu" hide-gt-sm ng-click="main.toggleList()" aria-label="Show Databases List">
+                    <md-icon md-svg-icon="menu"></md-icon>
+                </md-button>
+                <md-select placeholder="{{main.selected.server}}" ng-model="main.selected.server">
+                    <md-option ng-repeat="server in servers" value="{{server}}">{{server}}</md-option>
+                </md-select>
+            </md-toolbar>
+            <md-content flex id="content">
+                <div ng-view></div>
+            </md-content>
+        </div>
+    </div>
+    <script src="./vendor/bower/angular/angular.js"></script>
+    <script src="./vendor/bower/angular-animate/angular-animate.js"></script>
+    <script src="./vendor/bower/angular-aria/angular-aria.js"></script>
+    <script src="./vendor/bower/angular-route/angular-route.js"></script>
+    <script type="text/javascript" src="./vendor/bower/angular-material/angular-material.js"></script>
+    <script src="./app/src/services.js"></script>
+    <script src="./app/src/controllers.js"></script>
+    <script src="./app/src/app.js"></script>
+</body>
+
+</html>

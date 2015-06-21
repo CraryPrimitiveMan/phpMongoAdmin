@@ -1,0 +1,37 @@
+{
+  "name": "phpMongoAdmin",
+  "version": "1.0.0",
+  "description": "MongoDB UI tool",
+  "main": "index.js",
+  "devDependencies": {
+    "babel": "5.6.1",
+    "browserify": "^10.2.4",
+    "gulp": "3.9.0",
+    "gulp-concat": "2.5.2",
+    "gulp-html-replace": "1.5.0",
+    "gulp-react": "3.0.1",
+    "gulp-streamify": "0.0.5",
+    "gulp-uglify": "1.2.0",
+    "reactify": "^1.1.1",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.2.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frontnode/phpMongoAdmin.git"
+  },
+  "keywords": [
+    "MongoDB",
+    "GUI",
+    "tool"
+  ],
+  "author": "vincenthou,CraryPrimitiveMan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/frontnode/phpMongoAdmin/issues"
+  },
+  "homepage": "https://github.com/frontnode/phpMongoAdmin"
+}

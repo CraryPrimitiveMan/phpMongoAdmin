@@ -10,7 +10,8 @@ use PhpMongoAdmin\Exception\InvalidArgumentException;
  */
 class DocController  extends Controller {
     /**
-     * Get all mongo collection document
+     * Get mongo collection document
+     * Default page is 1, page size is 50.
      * @param string $db Database name
      * @param string $collection Collection name
      * @return array Collection data and the total count

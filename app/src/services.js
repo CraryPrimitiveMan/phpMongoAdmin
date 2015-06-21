@@ -15,7 +15,7 @@ angular.module('services', [])
                         }
                     }
                 }
-                var url = 'web/front.php?r=' + router;
+                var url = 'api/index.php?r=' + router;
                 arguments[0] = url;
                 return $http[method].apply(this, arguments);
             }

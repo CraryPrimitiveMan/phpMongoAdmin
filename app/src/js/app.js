@@ -1,4 +1,23 @@
+var React = require('react')
+var Header = require('./header')
+var ConnectionList = require('./connections')
+var Report = require('./report')
+
+var App = React.createClass({
+  render: function() {
+    return (
+      <div className="wrapper">
+        <Header />
+        <section className="content">
+          <ConnectionList/>
+          <Report/>
+        </section>
+      </div>
+    );
+  }
+});
+
 React.render(
-  <h1>Hello, world!</h1>,
-  document.getElementById('example')
+  <App/>,
+  document.getElementById('container')
 );

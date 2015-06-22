@@ -6,6 +6,13 @@ import browserify from 'browserify';
 import watchify from 'watchify';
 import reactify from 'reactify';
 import streamify from 'gulp-streamify';
+import less from 'gulp-less';
+import LessPluginCleanCSS from 'less-plugin-clean-css';
+import minifyCSS from 'gulp-minify-css';
+import sourcemaps from 'gulp-sourcemaps';
+import clean from 'gulp-clean';
+
+var cleancss = new LessPluginCleanCSS({ advanced: true });
 
 /**
  * Global variables
@@ -14,6 +21,7 @@ import streamify from 'gulp-streamify';
 var path = {
   HTML: 'src/index.html',
   JS: ['src/js/*.js', 'src/js/**/*.js'],
+  LESS: 'src/less/app.less',
   ENTRY_POINT: 'src/js/app.js',
   OUT: 'build.js',
   MINIFIED_OUT: 'build.min.js',
@@ -33,6 +41,12 @@ gulp.task('copy', () =>
     .pipe(gulp.dest(path.INDEX_DEST))
 );
 
+gulp.task('less', () =>
+  gulp.src(path.LESS)
+    .pipe(less())
+    .pipe(gulp.dest(path.RES_DEST))
+);
+
 /*//Transform the JSX to JS
 gulp.task('transform', () =>
     gulp.src(path.JS)
@@ -48,6 +62,7 @@ gulp.task('watch', function(){
 
 gulp.task('watch', function() {
   gulp.watch(path.HTML, ['copy']);
+  gulp.watch(path.LESS, ['less']);
 
   var watcher  = watchify(browserify({
     entries: [path.ENTRY_POINT],
@@ -70,7 +85,6 @@ gulp.task('watch', function() {
 gulp.task('default', ['watch']);
 
 
-
 /**
  * Production tasks
  */
@@ -84,6 +98,11 @@ gulp.task('build', () =>
     .pipe(gulp.dest(path.RES_DEST))
 );*/
 
+gulp.task('clean', () =>
+  gulp.src(path.RES_DEST, {read: false})
+    .pipe(clean())
+);
+
 gulp.task('build', () =>
   browserify({
     entries: [path.ENTRY_POINT],
@@ -92,6 +111,17 @@ gulp.task('build', () =>
     .bundle()
     .pipe(source(path.MINIFIED_OUT))
     .pipe(streamify(uglify(path.MINIFIED_OUT)))
+    .pipe(gulp.dest(path.RES_DEST))
+);
+
+gulp.task('buildStyles', () =>
+  gulp.src(path.LESS)
+    .pipe(sourcemaps.init())
+    .pipe(less({
+      plugins: [cleancss]
+    }))
+    .pipe(minifyCSS())
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest(path.RES_DEST))
 );
 
@@ -104,4 +134,4 @@ gulp.task('replaceHTML', () =>
     .pipe(gulp.dest(path.DEST))
 );
 
-gulp.task('production', ['replaceHTML', 'build']);
+gulp.task('production', ['clean', 'replaceHTML', 'build', 'buildStyles']);

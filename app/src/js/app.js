@@ -3,6 +3,8 @@ var Header = require('./header')
 var ConnectionList = require('./connections')
 var Report = require('./report')
 
+var appElement = document.getElementById('container');
+
 var App = React.createClass({
   render: function() {
     return (
@@ -11,7 +13,7 @@ var App = React.createClass({
         <section className="content">
           <ConnectionList/>
           <Report/>
-        </section>
+        </section>        
       </div>
     );
   }
@@ -19,5 +21,5 @@ var App = React.createClass({
 
 React.render(
   <App/>,
-  document.getElementById('container')
+  appElement
 );

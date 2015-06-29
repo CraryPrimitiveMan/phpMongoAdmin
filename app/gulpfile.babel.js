@@ -11,6 +11,7 @@ import LessPluginCleanCSS from 'less-plugin-clean-css';
 import minifyCSS from 'gulp-minify-css';
 import sourcemaps from 'gulp-sourcemaps';
 import clean from 'gulp-clean';
+import connect from 'gulp-connect';
 
 var cleancss = new LessPluginCleanCSS({ advanced: true });
 
@@ -21,12 +22,13 @@ var cleancss = new LessPluginCleanCSS({ advanced: true });
 var path = {
   HTML: 'src/index.html',
   JS: ['src/js/*.js', 'src/js/**/*.js'],
+  LESS_FILES: ['src/less/*.less', 'src/less/**/*.less'],
   LESS: 'src/less/app.less',
   ENTRY_POINT: 'src/js/app.js',
   OUT: 'build.js',
   MINIFIED_OUT: 'build.min.js',
   RES_DEST: 'dist',
-  INDEX_DEST: '../'
+  INDEX_DEST: './'
 };
 
 path.ALL = path.JS.concat(path.HTML);
@@ -39,12 +41,14 @@ path.ALL = path.JS.concat(path.HTML);
 gulp.task('copy', () =>
   gulp.src(path.HTML)
     .pipe(gulp.dest(path.INDEX_DEST))
+    .pipe(connect.reload())
 );
 
 gulp.task('less', () =>
   gulp.src(path.LESS)
     .pipe(less())
     .pipe(gulp.dest(path.RES_DEST))
+    .pipe(connect.reload())
 );
 
 /*//Transform the JSX to JS
@@ -60,9 +64,17 @@ gulp.task('watch', function(){
 });
 */
 
+gulp.task('connect', () =>
+  connect.server({
+    root: './',
+    livereload: true,
+    port: 8001
+  })
+);
+
 gulp.task('watch', function() {
   gulp.watch(path.HTML, ['copy']);
-  gulp.watch(path.LESS, ['less']);
+  gulp.watch(path.LESS_FILES, ['less']);
 
   var watcher  = watchify(browserify({
     entries: [path.ENTRY_POINT],
@@ -75,6 +87,7 @@ gulp.task('watch', function() {
     watcher.bundle()
       .pipe(source(path.OUT))
       .pipe(gulp.dest(path.RES_DEST))
+      .pipe(connect.reload())
       console.log('Updated');
   })
     .bundle()
@@ -82,7 +95,7 @@ gulp.task('watch', function() {
     .pipe(gulp.dest(path.RES_DEST));
 });
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['connect', 'watch', 'copy', 'less']);
 
 
 /**

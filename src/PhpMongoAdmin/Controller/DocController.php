@@ -22,8 +22,8 @@ class DocController  extends Controller {
             throw new InvalidArgumentException('Database or collection name is empty');
         }
 
-        $page = $this->request->query->get('page', 1);
-        $pageSize = $this->request->query->get('per-page', 50);
+        $page = $this->getQuery('page', 1);
+        $pageSize = $this->getQuery('per-page', 50);
         $skipNum = ($page - 1) * $pageSize;
 
         $coll = $this->getCollection($db, $collection);
@@ -34,6 +34,7 @@ class DocController  extends Controller {
             array_push($items, $doc);
         }
 
-        return ['total' => $total, 'items' => $items];
+        return ['total' => $total, 'page' => $page, 'per-page' => $pageSize, 'items' => $items];
     }
+
 }

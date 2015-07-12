@@ -4,11 +4,16 @@ namespace PhpMongoAdmin;
 use Exception;
 use MongoClient;
 use PhpMongoAdmin\Base\Component;
+use PhpMongoAdmin\Base\Formatter;
 use PhpMongoAdmin\Exception\NotFoundException;
 use PhpMongoAdmin\Exception\ServerException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Framework is a helper class serving common framework functionalities.
+ * @author Harry Sun
+ */
 class Framework extends Component
 {
     /**
@@ -59,6 +64,9 @@ class Framework extends Component
             $controller = new $controllerName($request);
             // call the action
             $data = call_user_func_array([$controller, $actionName], [$db, $collection]);
+            // change MongoId to string, like "ObjectId(\"54c9f4f32736e7c8048b456b\")"
+            // change MongoDate to string, like "ISODate(\"2015-01-29T08:53:07.450Z\")"
+            $data = Formatter::document2Json($data);
             if (!is_string($data)) {
                 $data = json_encode($data);
             }

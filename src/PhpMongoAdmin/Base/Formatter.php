@@ -40,7 +40,7 @@ class Formatter {
      * @param $document
      * @return mixed
      */
-    private static function document2Json($document) {
+    public static function document2Json($document) {
         if ($document instanceof MongoId) {
             $document = 'ObjectId("' . $document . '")';
         } else if ($document instanceof MongoDate) {
@@ -60,7 +60,7 @@ class Formatter {
      * @param $jsonDoc
      * @return string
      */
-    private static function Json2Str($jsonDoc) {
+    public static function Json2Str($jsonDoc) {
         $stringContent = is_string($jsonDoc) ? $json : json_encode($jsonDoc);
         $objectIdRegular = '/"ObjectId\(\\\\"([0-9a-z]{24})\\\\"\)"/';
         $objectIdReplace = 'ObjectId("$1")';
@@ -79,7 +79,7 @@ class Formatter {
      * @param $stringContent
      * @return mixed
      */
-    private static function str2Json($stringContent) {
+    public static function str2Json($stringContent) {
         $objectIdRegular = '/ObjectId\("([0-9a-z]{24})"\)/';
         $objectIdReplace = '"ObjectId("$1")"';
         $dateReuglar = '/ISODate\("([0-9A-Z\-:\.\+]+)"\)/';

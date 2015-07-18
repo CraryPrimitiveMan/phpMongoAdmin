@@ -77,11 +77,11 @@ class Controller extends Component {
         $params = $this->request->getContent();
 
         if (!empty($params)) {
-            $params = json_decode($params);
+            $params = json_decode($params, true);
         }
 
         if (!is_null($key)) {
-            $params = array_key_exists($params, $key) ? $params[$key] : $default;
+            $params = array_key_exists($key, $params) ? $params[$key] : $default;
         }
 
         return $params;

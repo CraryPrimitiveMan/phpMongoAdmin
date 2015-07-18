@@ -44,7 +44,7 @@ class IndexController extends Controller {
             throw new InvalidArgumentException('Index keys is empty');
         }
 
-        $keys = $this->initKeys($keys);
+        $keys = $this->_initKeys($keys);
         // Creating index with background options
         if (!array_key_exists('background', (array)$options)) {
             $options['background'] = true;
@@ -71,7 +71,7 @@ class IndexController extends Controller {
             throw new InvalidArgumentException('Index keys is empty');
         }
 
-        $keys = $this->initKeys($keys);
+        $keys = $this->_initKeys($keys);
 
         return $this->getCollection($db, $collection)->deleteIndex($keys);
     }
@@ -82,8 +82,8 @@ class IndexController extends Controller {
      * @param $keys
      * @return array|string
      */
-    protected function initKeys($keys) {
-        // If only one key, use string
+    private function _initKeys($keys) {
+        // If only one key, use the first value
         if (is_array($keys) && count($keys) === 1) {
             $keys = $keys[0];
         }

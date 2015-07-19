@@ -35,7 +35,7 @@ class DocController  extends Controller {
             array_push($items, $doc);
         }
 
-        return ['total' => $total, 'page' => $page, 'per-page' => $pageSize, 'items' => $items];
+        return ['total' => $total, 'page' => (int) $page, 'per-page' => (int) $pageSize, 'items' => $items];
     }
 
     /**

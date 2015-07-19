@@ -1,7 +1,7 @@
 API DOC
 =======
 
-The api url looks like 'api/index.php?r={controller_name}/{action_name}/{server_name}/{database_name}/{collection_name}'
+The api url looks like `api/index.php?r={controller_name}/{action_name}/{server_name}/{database_name}/{collection_name}`
 
 ## MongoDB Server
 

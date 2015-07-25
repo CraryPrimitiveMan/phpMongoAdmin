@@ -5,6 +5,7 @@ use Exception;
 use MongoClient;
 use PhpMongoAdmin\Base\Component;
 use PhpMongoAdmin\Base\Formatter;
+use PhpMongoAdmin\Base\HttpException;
 use PhpMongoAdmin\Exception\NotFoundException;
 use PhpMongoAdmin\Exception\ServerException;
 use PhpMongoAdmin\Exception\BadMethodCallException;
@@ -86,7 +87,11 @@ class Framework extends Component
             $response = new Response($data);
         } catch (Exception $e) {
             // catch all exception and return it
-            $response = new Response($e->getMessage(), $e->getCode());
+            if ($e instanceof HttpException) {
+                $response = new Response($e->getMessage(), $e->getCode());
+            } else {
+                $response = new Response('Message: ' . $e->getMessage() . ' Code: ' . $e->getCode(), 400);
+            }
         }
 
         return $response;

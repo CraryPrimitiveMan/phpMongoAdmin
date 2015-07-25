@@ -21,15 +21,59 @@ http://{server-domain}/api/index.php?r=server/index
 - Request Example
 
 ```
-http://localhost/phpMongoAdmin/api/index.php?r=database/index
+http://localhost/phpMongoAdmin/api/index.php?r=server/index
 ```
 
 - Response Example
 
 ```
 [
-    "server1"
+    {
+        "name": "server1",
+        "dsn": "localhost:27017"
+    }
 ]
+```
+
+### Update server config
+
+- Request Method:
+PUT
+
+- Request Endpoint:
+http://{server-domain}/api/index.php?r=server/update
+
+- Request Parameters:
+
+| Name | Type | Required | Example | description |
+| ---- | ---- | -------- | ------- | ----------- |
+| config | array | yes |  |  |
+
+- Request Parameters Example
+```
+{
+    "config": [{
+        "name": "server0",
+        "dsn": "localhost:27017"
+    }, {
+        "name": "server1",
+        "dsn": "localhost:27017"
+    }]
+}
+```
+- Request Example
+
+```
+http://localhost/phpMongoAdmin/api/index.php?r=server/update
+```
+
+- Response Example
+
+```
+{
+    "ok": "1"
+}
+
 ```
 
 ## MongoDB Database

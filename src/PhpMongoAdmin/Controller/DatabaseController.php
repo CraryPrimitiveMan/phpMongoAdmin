@@ -46,13 +46,13 @@ class DatabaseController extends Controller {
 
         $result = [];
         // Split the code with semicolon
-        $codes = explode(';', $code);
-        foreach ($codes as $code) {
+        $shells = preg_split('/(?<=\))[\s]*;/', $code);
+        foreach ($shells as $shell) {
             // Skip the empty code
-            if (!empty(trim($code))) {
-                $code = $this->_refineCode($code);
+            if (!empty(trim($shell))) {
+                $shell = $this->_addToArray($shell);
                 // execute the code
-                $result[] = $this->getDatabase($db)->execute($code);
+                $result[] = $this->getDatabase($db)->execute($shell);
             }
         }
         return $result;
@@ -60,19 +60,27 @@ class DatabaseController extends Controller {
 
     /**
      * Add the .toArray() for mongodb find statement
-     * @param string $code
+     * The default find statement will return the cursor
+     * The forEach and map operate need to refine
+     * It can't find the result with `forEach` and `map`, need to refine
+     * @param string $shell
      * @return string
      */
-    private function _refineCode($code) {
-        // I don't want to refine it again.
+    private function _addToArray($shell) {
+        // Remove count/explain/forEach/hasNext/map/next/objsLeftInBatch
+        $cursorOperate = 'addOption|batchSize|hint|limit|maxTimeMS|max|min|readPref|showDiskLoc|size|skip|snapshot|sort';
+        // String without brackets
+        $strWithoutBrackets = '[^()]*';
+        // String in brackets
+        $strInBrackets = '\(' . $strWithoutBrackets . '(?:\(' . $strWithoutBrackets . '\))*'. $strWithoutBrackets . '\)';
         // If there is any problem, please use the following tool to refine it.
         // https://jex.im/regulex/
-        $findRegular = '/^(.*?find\([^()]*\)(?:\.?(?!toArray\(\))[0-9a-zA-Z()]*)*)((?:(?!\.toArray\(\)).)*)$/m';
-        if (preg_match_all($findRegular, $code, $matches)) {
+        $findRegular = '/^(.*?find' . $strInBrackets . '(?:\.?(?:' . $cursorOperate . ')\(' . $strWithoutBrackets . '\))*)((?:(?!\.toArray\(\)).)*)$/m';
+        if (preg_match_all($findRegular, $shell, $matches)) {
             // Add the toArray function to get the data
-            $code = $matches[1][0] . '.toArray()' . $matches[2][0];
+            $shell = $matches[1][0] . '.toArray()' . $matches[2][0];
         }
-        return $code;
+        return $shell;
     }
 
     /**

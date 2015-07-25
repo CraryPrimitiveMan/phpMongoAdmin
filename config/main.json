@@ -1,1 +1,1 @@
-[{"name":"server0","dsn":"localhost:27017"}]
+[{"name":"default","dsn":"localhost:27017"}]

@@ -4,11 +4,18 @@ namespace PhpMongoAdmin;
 use Exception;
 use MongoClient;
 use PhpMongoAdmin\Base\Component;
+use PhpMongoAdmin\Base\Formatter;
+use PhpMongoAdmin\Base\HttpException;
 use PhpMongoAdmin\Exception\NotFoundException;
 use PhpMongoAdmin\Exception\ServerException;
+use PhpMongoAdmin\Exception\BadMethodCallException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Framework is a helper class serving common framework functionalities.
+ * @author Harry Sun
+ */
 class Framework extends Component
 {
     /**
@@ -31,6 +38,17 @@ class Framework extends Component
      * @var MongoClient
      */
     public static $mongo;
+
+    /**
+     * @var array
+     */
+    private static $actionMap = [
+        'create' => ['POST'],
+        'update' => ['PUT'],
+        'view' => ['GET'],
+        'index' => ['GET'],
+        'delete' => ['DELETE'],
+    ];
 
     /**
      * Init the framework
@@ -56,19 +74,45 @@ class Framework extends Component
             // parse the path to controllerName/actionName/server/db and collection
             list($controllerName, $actionName, $server, $db, $collection) = $this->parsePath($path);
             $this->generateMongo($server);
+            $this->checkMethod($actionName, $request);
             $controller = new $controllerName($request);
             // call the action
-            $data = call_user_func_array([$controller, $actionName], [$db, $collection]);
+            $data = call_user_func_array([$controller, $actionName . 'Action'], [$db, $collection]);
+            // change MongoId to string, like "ObjectId(\"54c9f4f32736e7c8048b456b\")"
+            // change MongoDate to string, like "ISODate(\"2015-01-29T08:53:07.450Z\")"
+            $data = Formatter::document2Json($data);
             if (!is_string($data)) {
                 $data = json_encode($data);
             }
             $response = new Response($data);
         } catch (Exception $e) {
             // catch all exception and return it
-            $response = new Response($e->getMessage(), $e->getCode());
+            if ($e instanceof HttpException) {
+                $response = new Response($e->getMessage(), $e->getCode());
+            } else {
+                $response = new Response('Message: ' . $e->getMessage() . ' Code: ' . $e->getCode(), 400);
+            }
         }
 
         return $response;
+    }
+
+    /**
+     * Check the request method
+     * @param $action
+     * @param Request $request
+     * @throws BadMethodCallException
+     */
+    protected function checkMethod($action, Request $request)
+    {
+        // check the request method
+        if (!empty(static::$actionMap[$action])) {
+            $methods = static::$actionMap[$action];
+            $method = $request->getMethod();
+            if (!in_array($method, $methods)) {
+                throw new BadMethodCallException('Bad method');
+            }
+        }
     }
 
     /**
@@ -92,7 +136,8 @@ class Framework extends Component
 
         $ucController = ucfirst($controller);
         $controller = __NAMESPACE__ . '\\Controller\\' . $ucController . 'Controller';
-        $action = $action . 'Action';
+
+        // $action = $action . 'Action';
         // controller file path
         $path = __DIR__ . '/Controller/' . $ucController . 'Controller.php';
 

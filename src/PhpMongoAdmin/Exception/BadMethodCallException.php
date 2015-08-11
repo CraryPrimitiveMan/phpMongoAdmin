@@ -3,8 +3,8 @@ namespace PhpMongoAdmin\Exception;
 
 use PhpMongoAdmin\Base\HttpException;
 
-class InvalidArgumentException extends HttpException {
+class BadMethodCallException extends HttpException {
     public function __construct($message = "") {
-        return parent::__construct($message, 440);
+        return parent::__construct($message, 405);
     }
 }

@@ -1,0 +1,40 @@
+#container {
+  height: 100%;
+}
+
+.wrapper {
+  height: 100%;
+  background-color: @bg-color;
+}
+
+.header {
+  overflow: hidden;
+  background-color: @brand-bg-color;
+  color: @brand-font-color;
+
+  .logo {
+    display: inline-block;
+    padding: 20px;
+    background-color: darken(@brand-bg-color, 10%);
+  }
+
+  .btn-group {
+    float: right;
+    display: inline-block;
+    margin: 0;
+    padding: 20px;
+    list-style: none;
+  }
+}
+
+.content {
+  display: flex;
+  .tree-wrap {
+    padding: 20px;
+    width: 200px;
+  }
+  .report {
+    padding-top: 20px;
+    flex: 1;
+  }
+}

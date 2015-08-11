@@ -1,8 +1,5 @@
-/.idea/encodings.xml
-/.idea/misc.xml
-/.idea/modules.xml
-/.idea/.name
-/.idea/phpMongoAdmin.iml
-/.idea/scopes/scope_settings.xml
-/.idea/vcs.xml
-/.idea/workspace.xml
+*.xml
+*.iml
+*.name
+dist
+node_modules

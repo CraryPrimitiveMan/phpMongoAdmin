@@ -16,10 +16,10 @@ var Report = React.createClass({
   },
 
   componentDidMount: function() {
-    EventBus.sub('collectionSelected', function(colName){
+    EventBus.sub('docSelected', function(docName){
       tabs = this.state.tabs
       tabs.push({
-        title: colName
+        title: docName
       })
       this.setState({
         tabs: tabs,
@@ -46,7 +46,7 @@ var Report = React.createClass({
           {this.state.tabs.map(function(tab, idx){
               return (
                 <TabPanel key={idx}>
-                  <h2>Hello from Foo</h2>
+                  
                 </TabPanel>
               );
           }, this)}

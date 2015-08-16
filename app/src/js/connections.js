@@ -2,8 +2,41 @@ var React = require('react')
 var TreeView = require('react-treeview')
 var $ = require('jquery')
 var EventBus = require('./event-bus')
+var config = require('./config')
+var ContextMenuLayer = require('react-contextmenu').ContextMenuLayer
 
-var ConnenctionList = React.createClass({
+//Component on which context-menu must be triggred
+var LabelTitle = React.createClass({
+  render: function(){
+    return(
+      <span className="node" target={this.props.target}>{this.props.name}</span>
+    )
+  }
+});
+
+var ConnectionTitle = ContextMenuLayer("connection", function(props){
+  return props;
+})(LabelTitle);
+
+var CollectionTitle = ContextMenuLayer("collection", function(props){
+  return props;
+})(LabelTitle);
+
+var DocumentTitle = ContextMenuLayer("document", function(props) {
+  return props;
+})(React.createClass({
+  handledocClick: function(docName) {
+    EventBus.pub('docSelected', docName)
+  },
+  render: function() {
+    return(
+      <div key={this.props.key} onDoubleClick={this.handledocClick.bind(this, this.props.name)} className="item ">{this.props.name}</div>
+    )
+  }
+}));
+
+//Connenction List
+var ConnectionList = React.createClass({
 
   getInitialState: function() {
     return {connenctions: []};
@@ -11,7 +44,7 @@ var ConnenctionList = React.createClass({
 
   componentDidMount: function() {
     var self = this
-    $.get('/api/index.php?r=server/index', function(servers){
+    $.get(config.domain + 'server/index', function(servers){
       var connenctions = []
       for (idx in servers) {
         connenctions.push({
@@ -29,12 +62,12 @@ var ConnenctionList = React.createClass({
   handleSeverClick: function(idx) {
     var selectedConnection = this.state.connenctions[idx]
     if (!selectedConnection.dbs.length) {
-      $.get('/api/index.php?r=database/index/' + selectedConnection.name, function(dbs){
+      $.get(config.domain + 'database/index/' + selectedConnection.name, function(dbs){
         selectedConnection.dbs = dbs.map(function(db){
           return {
             name: db,
             collapsed: true,
-            collections: []
+            docs: []
           }
         })
         this.setState({
@@ -47,11 +80,11 @@ var ConnenctionList = React.createClass({
   handleDBClick: function(conIdx, dbIdx) {
     selectedConnection = this.state.connenctions[conIdx]
     selectedDb = selectedConnection.dbs[dbIdx]
-    if (!selectedDb.collections.length) {
-      $.get('/api/index.php?r=collection/index/' + [selectedConnection.name, selectedDb.name].join('/'), function(collections){
-        selectedDb.collections = collections.map(function(collection){
+    if (!selectedDb.docs.length) {
+      $.get(config.domain + 'collection/index/' + [selectedConnection.name, selectedDb.name].join('/'), function(docs){
+        selectedDb.docs = docs.map(function(doc){
           return {
-            name: collection,
+            name: doc,
             collapsed: true
           }
         })
@@ -62,30 +95,26 @@ var ConnenctionList = React.createClass({
     }
   },
 
-  handleCollectionClick: function(colName) {
-    EventBus.pub('collectionSelected', colName)
-  },
-
   render: function() {
     return (
       <nav className="tree-wrap">
         {this.state.connenctions.map(function(con, i) {
-          var name = con.name
-          var label = <span className="node">{name}</span>;
+          var name = con.name;
+          var label = <ConnectionTitle target="con" name={name}/>;
           var collapsed = con.collapsed;
           var self = this;
           return (
             <TreeView key={name + '|' + i} nodeLabel={label} defaultCollapsed={collapsed} onClick={self.handleSeverClick.bind(self, i)}>
               {con.dbs.map(function(db, j) {
-                var dbName = db.name
-                var label = <span className="node">{dbName}</span>;
+                var dbName = db.name;
+                var label = <CollectionTitle target="db" name={dbName}/>;
                 var collapsed = db.collapsed;
                 return (
                   <TreeView nodeLabel={label} key={dbName} defaultCollapsed={collapsed} onClick={self.handleDBClick.bind(self, i, j)}>
-                    {db.collections.map(function(collection, k) {
-                      var colName = collection.name;
+                    {db.docs.map(function(doc, k) {
+                      var docName = doc.name;
                       return (
-                        <div key={colName + '|' + k} onDoubleClick={self.handleCollectionClick.bind(self, colName)} className="item">{colName}</div>
+                        <DocumentTitle key={docName + '|' + k} name={docName}/>
                       );
                     })}
                   </TreeView>
@@ -99,4 +128,4 @@ var ConnenctionList = React.createClass({
   }
 });
 
-module.exports = ConnenctionList;
+module.exports = ConnectionList;

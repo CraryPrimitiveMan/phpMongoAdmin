@@ -1,7 +1,9 @@
 var React = require('react')
 var Header = require('./header')
 var ConnectionList = require('./connections')
+var Menu = require('./menu')
 var Report = require('./report')
+var config = require('./config')
 
 var appElement = document.getElementById('container');
 
@@ -12,6 +14,9 @@ var App = React.createClass({
         <Header />
         <section className="content">
           <ConnectionList/>
+          <Menu id="connection" items={config.menuAction.connection}/>
+          <Menu id="collection" items={config.menuAction.collection}/>
+          <Menu id="document" items={config.menuAction.document}/>
           <Report/>
         </section>        
       </div>

@@ -25,12 +25,15 @@ var CollectionTitle = ContextMenuLayer("collection", function(props){
 var DocumentTitle = ContextMenuLayer("document", function(props) {
   return props;
 })(React.createClass({
-  handledocClick: function(docName) {
-    EventBus.pub('docSelected', docName)
+  handledocClick: function(docName, extras) {
+    EventBus.pub('docSelected', {
+      name: docName,
+      extras: extras
+    })
   },
   render: function() {
     return(
-      <div key={this.props.key} onDoubleClick={this.handledocClick.bind(this, this.props.name)} className="item ">{this.props.name}</div>
+      <div key={this.props.key} onDoubleClick={this.handledocClick.bind(this, this.props.name, this.props.extras)} className="item ">{this.props.name}</div>
     )
   }
 }));
@@ -113,8 +116,12 @@ var ConnectionList = React.createClass({
                   <TreeView nodeLabel={label} key={dbName} defaultCollapsed={collapsed} onClick={self.handleDBClick.bind(self, i, j)}>
                     {db.docs.map(function(doc, k) {
                       var docName = doc.name;
+                      var extras = {
+                        server: name,
+                        db: dbName
+                      };
                       return (
-                        <DocumentTitle key={docName + '|' + k} name={docName}/>
+                        <DocumentTitle key={docName + '|' + k} name={docName} extras={extras}/>
                       );
                     })}
                   </TreeView>

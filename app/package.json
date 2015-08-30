@@ -42,11 +42,12 @@
   "homepage": "https://github.com/frontnode/phpMongoAdmin",
   "dependencies": {
     "classnames": "^1.2.2",
-    "fixed-data-table": "^0.3.0",
     "jquery": "^2.1.4",
     "react": "0.13.3",
     "react-contextmenu": "^0.2.1",
+    "react-json-table": "0.0.2",
     "react-modal": "^0.2.0",
+    "react-object-inspector": "^0.1.4",
     "react-tabs": "^0.2.0",
     "react-treeview": "^0.3.12"
   }

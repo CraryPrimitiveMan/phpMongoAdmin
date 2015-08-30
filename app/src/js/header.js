@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var EventBus = require('./event-bus')
 
 Modal.setAppElement(document.getElementById('container'));
 Modal.injectCSS();
@@ -7,6 +8,10 @@ Modal.injectCSS();
 var Header = React.createClass({
   getInitialState: function() {
     return { modalIsOpen: false };
+  },
+
+  execute: function() {
+    EventBus.pub('exeCmd');
   },
 
   openModal: function() {
@@ -22,6 +27,7 @@ var Header = React.createClass({
       <header className="header">
         <span className="logo">PHPMongo Admin</span>
         <ul className="btn-group">
+          <li onClick={this.execute} className="btn">Execute</li>
           <li onClick={this.openModal} className="btn">New Connecion</li>
         </ul>
         <Modal

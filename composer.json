@@ -4,8 +4,8 @@
         "symfony/http-foundation": "2.1.*"
     },
     "autoload": {
-        "psr-0": {
-            "PhpMongoAdmin": "src/"
+        "psr-4": {
+            "PhpMongoAdmin\\": "src/"
         }
     }
 }

@@ -43,5 +43,31 @@ module.exports = {
         target: 'remove'
       }
     ],
+    tab: [
+      {
+        label: 'New Tab',
+        target: 'new'
+      },
+      {
+        label: 'Re-execute Query',
+        target: 'execute'
+      },  
+      {
+        label: 'Duplicate Query in New Tab',
+        target: 'duplicate'
+      },
+      {
+        label: 'Close Current Tab',
+        target: 'closecurrent'
+      },
+      {
+        label: 'Close Other Tabs',
+        target: 'closeothers'
+      },
+      {
+        label: 'Close Tabs to The Right',
+        target: 'closeright'
+      }
+    ]
   }
 }

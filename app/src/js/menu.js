@@ -23,8 +23,8 @@ var Menu = React.createClass({
           </ContextMenu>
         );
     },
-    handleSelect: function(data, item) {
-        console.log(data, item);
+    handleSelect: function(data) {
+        console.log(data);
     }
 });
 

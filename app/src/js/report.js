@@ -9,6 +9,19 @@ var Tabs = ReactTabs.Tabs;
 var TabList = ReactTabs.TabList;
 var TabPanel = ReactTabs.TabPanel;
 var JsonTable = require('react-json-table');
+var Menu = require('./menu')
+var ContextMenuLayer = require('react-contextmenu').ContextMenuLayer
+var config = require('./config')
+
+var TabTitle = ContextMenuLayer("tab", function(props){
+  return props;
+})(React.createClass({
+  render: function(){
+    return(
+      <span className="node" target={this.props.target}>{this.props.name}</span>
+    )
+  }
+}));
 
 var Table = React.createClass({
   getInitialState: function(){
@@ -109,9 +122,15 @@ var Report = React.createClass({
     }.bind(this));
   },
 
+  handleDelete: function(idx) {
+    this.state.tabs.splice(idx, 1)
+    this.setState({
+      tabs: this.state.tabs
+    });
+  },
+
   handleChange: function(value, idx) {
-    console.log(arguments)
-    this.state.tabs[idx].cmd = value
+    this.state.tabs[idx].cmd = value;
     this.setState({
       tabs: this.state.tabs
     });
@@ -145,8 +164,15 @@ var Report = React.createClass({
         <Tabs onSelect={this.handleSelected} selectedIndex={this.state.selectedIndex}>
           <TabList>
             {this.state.tabs.map(function(tab, idx){
+              var extras = {
+                idx: idx
+              };
               return (
-                <Tab key={idx}>{tab.title}</Tab>
+                <Tab key={idx}>
+                  <i className="iconfont" onClick={this.handleDelete.bind(this, idx)}>&#xe65d;</i>
+                  <TabTitle name={tab.title} extras={extras}/>
+                  <Menu id="tab" items={config.menuAction.tab}/>
+                </Tab>
               );
             }, this)}
           </TabList>

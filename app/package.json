@@ -41,9 +41,11 @@
   },
   "homepage": "https://github.com/frontnode/phpMongoAdmin",
   "dependencies": {
+    "brace": "^0.5.1",
     "classnames": "^1.2.2",
     "jquery": "^2.1.4",
     "react": "0.13.3",
+    "react-ace": "^2.2.1",
     "react-contextmenu": "^0.2.1",
     "react-json-table": "0.0.2",
     "react-modal": "^0.2.0",

@@ -13,6 +13,11 @@ var Menu = require('./menu')
 var ContextMenuLayer = require('react-contextmenu').ContextMenuLayer
 var config = require('./config')
 
+var brace  = require('brace');
+var AceEditor  = require('react-ace');
+require('brace/mode/java')
+require('brace/theme/github')
+
 var TabTitle = ContextMenuLayer("tab", function(props){
   return props;
 })(React.createClass({
@@ -129,7 +134,7 @@ var Report = React.createClass({
     });
   },
 
-  handleChange: function(value, idx) {
+  handleChange: function(idx, value) {
     this.state.tabs[idx].cmd = value;
     this.setState({
       tabs: this.state.tabs
@@ -141,13 +146,12 @@ var Report = React.createClass({
   },
 
   handleExecute: function(tab, cmd) {
-    var textarea = React.findDOMNode(this.refs.query);
-    var query = textarea ? textarea.value : cmd;
+    var query = tab.cmd ? tab.cmd : cmd;
     $.ajax({
         dataType: 'json',
         type: 'post',
         url: config.domain + 'database/execute/' + tab.config.server + '/' + tab.config.db,
-        data: JSON.stringify({code: query}),
+        data: JSON.stringify({code: query.replace(/\n|\s/g,'')}),
         success: function(resp){
           this.state.tabs[tab.idx].results = resp[0].retval;
           this.setState({
@@ -179,8 +183,17 @@ var Report = React.createClass({
           {this.state.tabs.map(function(tab, idx){
               return (
                 <TabPanel key={idx}>
-                  <textarea className="cmd-input" ref="query" value={tab.cmd} onChange={this.handleChange.bind(this, tab.cmd, idx)}></textarea>
-                  <Table rows={ tab.results }  />
+                  <AceEditor
+                    mode="javascript"
+                    theme="github"
+                    onChange={this.handleChange.bind(this, idx)}
+                    name="command"
+                    value={tab.cmd}
+                    height="150px"
+                    width="100%"
+                    className="command"
+                  />
+                  <Table rows={ tab.results } />
                 </TabPanel>
               );
           }, this)}

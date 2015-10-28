@@ -8,7 +8,7 @@ var Tab = ReactTabs.Tab;
 var Tabs = ReactTabs.Tabs;
 var TabList = ReactTabs.TabList;
 var TabPanel = ReactTabs.TabPanel;
-var JsonTable = require('react-json-table');
+var JsonTree = require('react-json-tree');
 var Menu = require('./menu')
 var ContextMenuLayer = require('react-contextmenu').ContextMenuLayer
 var config = require('./config')
@@ -27,70 +27,6 @@ var TabTitle = ContextMenuLayer("tab", function(props){
     )
   }
 }));
-
-var Table = React.createClass({
-  getInitialState: function(){
-    // We will store the selected cell and row, also the sorted column
-    return {row: false, cell: false, sort: false};
-  },  
-  render: function(){
-    var self = this,
-        // clone the rows
-        items = this.props.rows.slice()
-    ;
-    // Sort the table
-    if(this.state.sort){
-      items.sort(function(a, b){
-         return a[self.state.sort] - b[self.state.sort];
-      });
-    }
-        
-    return <JsonTable 
-      rows={items} 
-      settings={this.getSettings()} 
-      onClickCell={this.onClickCell}
-      onClickHeader={this.onClickHeader}
-      onClickRow={this.onClickRow} />;
-  },
-  
-  getSettings: function(){
-      var self = this;
-      // We will add some classes to the selected rows and cells
-      return {
-        keyField: 'name',
-        cellClass: function(current, key, item){
-          if(self.state.cell == key && self.state.row == item.name)
-            return current + ' cellSelected';
-          return current;
-        },
-        headerClass: function(current, key){
-            if(self.state.sort == key)
-              return current + ' headerSelected';
-            return current;
-        },
-        rowClass: function(current, item){
-          if(self.state.row == item.name)
-            return current + ' rowSelected';
-          return current;
-        }
-      };
-  },
-  
-  onClickCell: function(e, column, item){
-    console.log(arguments)
-    this.setState({cell: column});
-  },
-  
-  onClickHeader: function(e, column){
-    console.log(column)
-    this.setState({sort: column});
-  },
-  
-  onClickRow: function(e, item){
-    console.log(arguments)
-    this.setState({row: item.name});
-  }  
-});
 
 var Report = React.createClass({
 
@@ -161,6 +97,12 @@ var Report = React.createClass({
     });
   },
 
+  getItemString: function (type, data, itemType, itemString) {
+    console.log(arguments)
+    itemString = itemString.replace('key', 'field')
+    return data._id + '   ' + itemString + '   ' + type
+  },
+
   render: function () {
     var self = this;
     return (
@@ -191,9 +133,8 @@ var Report = React.createClass({
                     value={tab.cmd}
                     height="150px"
                     width="100%"
-                    className="command"
-                  />
-                  <Table rows={ tab.results } />
+                    className="command" />
+                  <JsonTree data={tab.results} getItemString={this.getItemString}/>
                 </TabPanel>
               );
           }, this)}

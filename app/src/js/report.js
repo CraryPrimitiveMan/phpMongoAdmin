@@ -1,8 +1,7 @@
 var React = require('react');
 var ReactTabs = require('react-tabs');
 var EventBus = require('./event-bus');
-var ObejctInspector = require('react-object-inspector');
-var $ = require('jquery');
+var rest = require('./rest');
 var config = require('./config');
 var Tab = ReactTabs.Tab;
 var Tabs = ReactTabs.Tabs;
@@ -17,6 +16,8 @@ var brace  = require('brace');
 var AceEditor  = require('react-ace');
 require('brace/mode/java')
 require('brace/theme/github')
+
+const SPACES = '\u00a0\u00a0\u00a0\u00a0';
 
 var TabTitle = ContextMenuLayer("tab", function(props){
   return props;
@@ -38,9 +39,9 @@ var Report = React.createClass({
   },
 
   componentDidMount: function() {
-    EventBus.sub('docSelected', function(doc){
+    EventBus.sub('collectionSelected', function(doc){
       tabs = this.state.tabs;
-      cmd = 'db.' + doc.name + '.find()';
+      cmd = 'db.' + doc.name + '.find();';
       tabs.push({
         title: doc.name,
         config: doc.extras,
@@ -83,24 +84,19 @@ var Report = React.createClass({
 
   handleExecute: function(tab, cmd) {
     var query = tab.cmd ? tab.cmd : cmd;
-    $.ajax({
-        dataType: 'json',
-        type: 'post',
-        url: config.domain + 'database/execute/' + tab.config.server + '/' + tab.config.db,
-        data: JSON.stringify({code: query.replace(/\n|\s/g,'')}),
-        success: function(resp){
-          this.state.tabs[tab.idx].results = resp[0].retval;
-          this.setState({
-            tabs: this.state.tabs
-          });
-        }.bind(this)
-    });
+    var path = config.domain + 'database/execute/' + tab.config.server + '/' + tab.config.db;
+    rest.post(path, {code: query.replace(/\n|\s|\t/g,'')}, function(resp){
+      this.state.tabs[tab.idx].results = resp[0].retval;
+      this.setState({
+        tabs: this.state.tabs
+      });
+    }.bind(this));
   },
 
   getItemString: function (type, data, itemType, itemString) {
-    console.log(arguments)
-    itemString = itemString.replace('key', 'field')
-    return data._id + '   ' + itemString + '   ' + type
+    itemString = SPACES + itemString.replace('key', 'field') + SPACES + type
+    data._id && (itemString = data._id + itemString)
+    return itemString
   },
 
   render: function () {
@@ -134,7 +130,11 @@ var Report = React.createClass({
                     height="150px"
                     width="100%"
                     className="command" />
-                  <JsonTree data={tab.results} getItemString={this.getItemString}/>
+                  <JsonTree
+                    data={tab.results}
+                    getLabelStyle={(type, expanded) => ({paddingRight:'10px'})}
+                    getItemString={this.getItemString}
+                    keyName={'records'} />
                 </TabPanel>
               );
           }, this)}

@@ -4,69 +4,76 @@ module.exports = {
     connection: [
       {
         label: 'Refresh',
-        target: 'refresh'
+        action: 'refresh'
       },  
       {
         label: 'Create Database',
-        target: 'create'
+        action: 'create'
       },
       {
         label: 'Disconnect',
-        target: 'disconnect'
+        action: 'disconnect'
+      }
+    ],
+    database: [
+      {
+        label: 'Refresh',
+        action: 'refresh'
+      },  
+      {
+        label: 'Create Collection',
+        action: 'create'
       }
     ],
     collection: [
       {
-        label: 'Refresh',
-        target: 'refresh'
-      },  
-      {
-        label: 'Create Collection',
-        target: 'create'
-      }
-    ],
-    document: [
-      {
         label: 'View Document',
-        target: 'view'
+        action: 'view'
       },
       {
         label: 'Insert Document',
-        target: 'insert'
+        action: 'insert'
       },  
       {
         label: 'Update Document',
-        target: 'update'
+        action: 'update'
       },
       {
         label: 'Remove Document',
-        target: 'remove'
+        action: 'remove'
+      },
+      {
+        action: ''
+      },
+      {
+        label: 'Drop Collection',
+        action: 'drop'
       }
     ],
     tab: [
       {
         label: 'New Tab',
-        target: 'new'
+        action: 'new'
       },
       {
         label: 'Re-execute Query',
-        target: 'execute'
+        action: 'execute'
       },  
       {
         label: 'Duplicate Query in New Tab',
-        target: 'duplicate'
+        action: 'duplicate'
       },
       {
         label: 'Close Current Tab',
-        target: 'closecurrent'
+        action: 'closecurrent'
       },
       {
         label: 'Close Other Tabs',
-        target: 'closeothers'
+        action: 'closeothers'
       },
       {
         label: 'Close Tabs to The Right',
-        target: 'closeright'
+        action: 'closeright'
       }
     ]
   }

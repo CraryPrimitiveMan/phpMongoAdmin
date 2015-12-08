@@ -9,5 +9,4 @@ return array(
     'Symfony\\Component\\HttpFoundation' => array($vendorDir . '/symfony/http-foundation'),
     'Symfony\\Component\\ClassLoader' => array($vendorDir . '/symfony/class-loader'),
     'SessionHandlerInterface' => array($vendorDir . '/symfony/http-foundation/Symfony/Component/HttpFoundation/Resources/stubs'),
-    'PhpMongoAdmin' => array($baseDir . '/src'),
 );

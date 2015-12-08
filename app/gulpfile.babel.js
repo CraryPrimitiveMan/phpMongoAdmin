@@ -21,6 +21,7 @@ var cleancss = new LessPluginCleanCSS({ advanced: true });
 
 var path = {
   HTML: 'src/index.html',
+  FONTS: 'src/fonts/*.*',
   JS: ['src/js/*.js', 'src/js/**/*.js'],
   LESS_FILES: ['src/less/*.less', 'src/less/**/*.less'],
   LESS: 'src/less/app.less',
@@ -43,6 +44,12 @@ gulp.task('copy', () =>
     .pipe(gulp.dest(path.INDEX_DEST))
     .pipe(connect.reload())
 );
+
+gulp.task('copyFonts', () =>
+  gulp.src(path.FONTS)
+    .pipe(gulp.dest(path.RES_DEST))
+    .pipe(connect.reload())
+)
 
 gulp.task('less', () =>
   gulp.src(path.LESS)
@@ -95,7 +102,7 @@ gulp.task('watch', function() {
     .pipe(gulp.dest(path.RES_DEST));
 });
 
-gulp.task('default', ['connect', 'watch', 'copy', 'less']);
+gulp.task('default', ['connect', 'watch', 'copy', 'copyFonts', 'less']);
 
 
 /**

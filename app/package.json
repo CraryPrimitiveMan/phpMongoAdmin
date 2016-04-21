@@ -1,54 +1,52 @@
 {
   "name": "phpMongoAdmin",
   "version": "1.0.0",
-  "description": "MongoDB UI tool",
-  "main": "index.js",
-  "devDependencies": {
-    "babel": "5.6.1",
-    "browserify": "10.2.4",
-    "gulp": "3.9.0",
-    "gulp-clean": "0.3.1",
-    "gulp-concat": "2.5.2",
-    "gulp-connect": "2.2.0",
-    "gulp-html-replace": "1.5.0",
-    "gulp-less": "3.0.3",
-    "gulp-minify-css": "1.1.6",
-    "gulp-react": "3.0.1",
-    "gulp-sourcemaps": "1.5.2",
-    "gulp-streamify": "0.0.5",
-    "gulp-uglify": "1.2.0",
-    "less-plugin-clean-css": "1.5.0",
-    "reactify": "1.1.1",
-    "vinyl-source-stream": "1.1.0",
-    "watchify": "3.2.2"
-  },
+  "description": "A set of PHP-scripts to manage MongoDB over the web.",
+  "author": "Harry Sun <sunguangjun@126.com>",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node build/dev-server.js",
+    "build": "node build/build.js",
+    "test": "",
+    "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/frontnode/phpMongoAdmin.git"
-  },
-  "keywords": [
-    "MongoDB",
-    "GUI",
-    "tool"
-  ],
-  "author": "vincenthou,CraryPrimitiveMan",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/frontnode/phpMongoAdmin/issues"
-  },
-  "homepage": "https://github.com/frontnode/phpMongoAdmin",
   "dependencies": {
-    "brace": "0.5.1",
-    "react": "0.13.3",
-    "react-ace": "2.2.1",
-    "react-contextmenu": "0.2.1",
-    "react-json-tree": "0.2.0",
-    "react-modal": "0.2.0",
-    "react-tabs": "0.2.0",
-    "react-treeview": "0.3.12",
-    "superagent": "^1.4.0"
+    "vue": "^1.0.18",
+    "babel-runtime": "^5.8.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.0.0",
+    "babel-loader": "^6.0.0",
+    "babel-plugin-transform-runtime": "^6.0.0",
+    "babel-preset-es2015": "^6.0.0",
+    "babel-preset-stage-2": "^6.0.0",
+    "connect-history-api-fallback": "^1.1.0",
+    "css-loader": "^0.23.0",
+    "eslint": "^2.0.0",
+    "eslint-friendly-formatter": "^1.2.2",
+    "eslint-loader": "^1.3.0",
+    "eslint-plugin-html": "^1.3.0",
+    "eslint-config-standard": "^5.1.0",
+    "eslint-plugin-promise": "^1.0.8",
+    "eslint-plugin-standard": "^1.3.2",
+    "eventsource-polyfill": "^0.9.6",
+    "express": "^4.13.3",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.8.4",
+    "function-bind": "^1.0.2",
+    "html-webpack-plugin": "^2.8.1",
+    "http-proxy-middleware": "^0.12.0",
+    "json-loader": "^0.5.4",
+    "ora": "^0.2.0",
+    "shelljs": "^0.6.0",
+    "url-loader": "^0.5.7",
+    "vue-hot-reload-api": "^1.2.0",
+    "vue-html-loader": "^1.0.0",
+    "vue-loader": "^8.2.1",
+    "vue-style-loader": "^1.0.0",
+    "webpack": "^1.12.2",
+    "webpack-dev-middleware": "^1.4.0",
+    "webpack-hot-middleware": "^2.6.0",
+    "webpack-merge": "^0.8.3"
   }
 }

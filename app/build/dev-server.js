@@ -56,6 +56,13 @@ app.use(hotMiddleware)
 var staticPath = path.posix.join(config.build.assetsPublicPath, config.build.assetsSubDirectory)
 app.use(staticPath, express.static('./static'))
 
+var childProcess = require('child_process')
+
+childProcess.execFile(__dirname + '/dev.sh', [], null, function (err, stdout, stderr) {
+  console.log(err)
+})
+console.log('PHP listening at http://localhost:8081\n')
+
 module.exports = app.listen(port, function (err) {
   if (err) {
     console.log(err)

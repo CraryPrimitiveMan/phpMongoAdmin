@@ -11,6 +11,8 @@ module.exports = {
   },
   dev: {
     port: 8080,
-    proxyTable: {}
+    proxyTable: {
+      'localhost:8080/api' : 'localhost:8081/api'
+    }
   }
 }
